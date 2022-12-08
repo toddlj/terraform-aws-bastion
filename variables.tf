@@ -18,6 +18,12 @@ variable "tags" {
   type        = map(string)
 }
 
+variable "instance_tags" {
+  description = "A mapping of tags to assign"
+  default     = {}
+  type        = map(string)
+}
+
 variable "region" {
 }
 
