@@ -218,10 +218,6 @@ resource "aws_autoscaling_group" "bastion_auto_scaling_group" {
   health_check_grace_period = 180
   health_check_type         = "EC2"
 
-  target_group_arns = [
-    aws_lb_target_group.bastion_lb_target_group.arn,
-  ]
-
   termination_policies = [
     "OldestLaunchConfiguration",
   ]
