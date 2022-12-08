@@ -144,55 +144,6 @@ resource "aws_iam_role_policy_attachment" "bastion_host" {
   role       = aws_iam_role.bastion_host_role.name
 }
 
-resource "aws_route53_record" "bastion_record_name" {
-  name    = var.bastion_record_name
-  zone_id = var.hosted_zone_id
-  type    = "A"
-  count   = var.create_dns_record ? 1 : 0
-
-  alias {
-    evaluate_target_health = true
-    name                   = aws_lb.bastion_lb.dns_name
-    zone_id                = aws_lb.bastion_lb.zone_id
-  }
-}
-
-resource "aws_lb" "bastion_lb" {
-  internal = var.is_lb_private
-  name     = "${local.name_prefix}-lb"
-
-  subnets = var.elb_subnets
-
-  load_balancer_type = "network"
-  tags               = merge(var.tags)
-}
-
-resource "aws_lb_target_group" "bastion_lb_target_group" {
-  name        = "${local.name_prefix}-lb-target"
-  port        = var.public_ssh_port
-  protocol    = "TCP"
-  vpc_id      = var.vpc_id
-  target_type = "instance"
-
-  health_check {
-    port     = "traffic-port"
-    protocol = "TCP"
-  }
-
-  tags = merge(var.tags)
-}
-
-resource "aws_lb_listener" "bastion_lb_listener_22" {
-  default_action {
-    target_group_arn = aws_lb_target_group.bastion_lb_target_group.arn
-    type             = "forward"
-  }
-
-  load_balancer_arn = aws_lb.bastion_lb.arn
-  port              = var.public_ssh_port
-  protocol          = "TCP"
-}
-
 resource "aws_iam_instance_profile" "bastion_host_profile" {
   role = aws_iam_role.bastion_host_role.name
   path = "/"
