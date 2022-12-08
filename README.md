@@ -1,3 +1,5 @@
+> This fork opts for a cheaper deployment without a load balancer.
+
 AWS Bastion Terraform module
 ===========================================
 
